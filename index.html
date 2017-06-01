@@ -5,8 +5,28 @@
 	<link rel="stylesheet" href="css/font-awesome/css/font-awesome.min.css">
 	<link rel="stylesheet" type="text/css" href="css/style.css">
 	
+	<meta property="og:url"           content="https://codepen.io/alkos/pen/MmNdNa?editors=1010" />
+	<meta property="og:type"          content="website" />
+	<meta property="og:title"         content="Quote Mashine" />
+	<meta property="og:description"   content="Random Programmers Quotes displayed" />
+	<!-- <meta property="og:image"         content="http://www.your-domain.com/path/image.jpg" /> -->
 </head>
 <body>
+	<!-- Load Facebook SDK for JavaScript -->
+	<div id="fb-root"></div>
+	<script>
+		(function(d, s, id) {
+			var js, fjs = d.getElementsByTagName(s)[0];
+			if (d.getElementById(id)) return;
+			js = d.createElement(s); js.id = id;
+			js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.9";
+			fjs.parentNode.insertBefore(js, fjs);
+		}(document, 'script', 'facebook-jssdk'));
+	</script>
+
+
+
+	<!-- Page Layout -->
 	<div class="pageContainer page--container">
 		<div class="cardMask openCard card--container">
 			
@@ -14,6 +34,16 @@
 		</div>
 	</div>
 	
+
+
+	<!-- Facebook share button code -->
+	<div class="fb-share-button" data-href="https://codepen.io/alkos/pen/MmNdNa?editors=1010" data-layout="button" data-size="small" data-mobile-iframe="true">
+		<a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&amp;src=sdkpreparse">
+			Share
+		</a>
+	</div>
+
+
 
 	<!-- JavaScript -->
 	<script

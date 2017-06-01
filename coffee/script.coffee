@@ -22,15 +22,15 @@ class @QuoteCard
 	_setCardColor: () ->
 		colorArray = ["blue", "pink", "purple", "orange", "green"]
 		
-
-
 		if colorArray.length <= @id
 			reminder = @id % colorArray.length
 			color = colorArray[reminder]
 		else 
 			color = colorArray[@id]
+		
 		console.log "color id ", color
 		return color
+
 
 
 	_getHTML: () ->
