@@ -1,6 +1,5 @@
 class @QuoteCard
 	constructor: (JSONitem, counter) ->
-		console.log "JSON ITEM", JSONitem
 		@cardJQuery = null
 
 
@@ -121,6 +120,8 @@ class QuoteMachine
 
 
 
+
+
 	# Event handling functions :: BEGIN
 	_loadHandler: () ->
 		# get programmers quotes
@@ -159,21 +160,30 @@ class QuoteMachine
 	# Event handling functions :: END
 
 
+
+
+
+
+
 	_getQuoteItem: () ->
 		quoteArrayLength = @quoteArray.length
-	
-		if quoteArrayLength >= @counter
-			item = @quoteArray[@counter]
+		if @counter >= quoteArrayLength
+			@counter = 0
+			@_getQuoteItem()
+		
+		else if quoteArrayLength > @counter
+			number = @counter
+			item = @quoteArray[number]
+			
+			console.log "@counter", @counter
+			console.log "ITEM, ", item
+			
+			return item
 		
 		# if end of quote array is reached
-		else 
-			@counter = 0;
-			@_getQuoteItem()
-	
 		# if user reverses sliding
 		
 
-		return item
 
 
 	_manageQuoteAPI: (JSONdata) ->
@@ -183,19 +193,21 @@ class QuoteMachine
 
 
 	_createNewQuoteCard: () ->
-		
+		console.log "ayooo"
 		quoteItem = @_getQuoteItem()
+		console.log "Quote item", quoteItem, "counter ", @counter
+		
+		if quoteItem
+			if quoteObject
+				quoteObject = null
+				@_createNewQuoteCard()
+			else
+				quoteObject = new QuoteCard( quoteItem, @counter )
+				
+				@quoteCard = quoteObject.getQuoteCard()
 
-		if quoteObject
-			quoteObject = null
-			@_createNewQuoteCard()
-		else
-			quoteObject = new QuoteCard( quoteItem, @counter )
-			
-			@quoteCard = quoteObject.getQuoteCard()
-
-			@counter++
-			@cardContainer.append(@quoteCard)
+				@counter++
+				@cardContainer.append(@quoteCard)
 		
 
 
