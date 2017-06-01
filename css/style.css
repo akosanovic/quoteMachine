@@ -136,38 +136,23 @@ body {
 }
 /* line 62, ../scss/_main-style.scss */
 .quoteCardContainer.blue {
-  background: #3da3ef;
-  -moz-box-shadow: 0px 9px 41px 1px #3da3ef;
-  -webkit-box-shadow: 0px 9px 41px 1px #3da3ef;
-  box-shadow: 0px 9px 41px 1px #3da3ef;
+  color: #3da3ef;
 }
 /* line 66, ../scss/_main-style.scss */
 .quoteCardContainer.pink {
-  background: #f92672;
-  -moz-box-shadow: 0px 9px 41px 1px #f92672;
-  -webkit-box-shadow: 0px 9px 41px 1px #f92672;
-  box-shadow: 0px 9px 41px 1px #f92672;
+  color: #f92672;
 }
 /* line 70, ../scss/_main-style.scss */
 .quoteCardContainer.purple {
-  background: #ae81ff;
-  -moz-box-shadow: 0px 9px 41px 1px #ae81ff;
-  -webkit-box-shadow: 0px 9px 41px 1px #ae81ff;
-  box-shadow: 0px 9px 41px 1px #ae81ff;
+  color: #ae81ff;
 }
 /* line 74, ../scss/_main-style.scss */
 .quoteCardContainer.orange {
-  background: #fd971f;
-  -moz-box-shadow: 0px 9px 41px 1px #fd971f;
-  -webkit-box-shadow: 0px 9px 41px 1px #fd971f;
-  box-shadow: 0px 9px 41px 1px #fd971f;
+  color: #fd971f;
 }
 /* line 78, ../scss/_main-style.scss */
 .quoteCardContainer.green {
-  background: #a5e12d;
-  -moz-box-shadow: 0px 9px 41px 1px #a5e12d;
-  -webkit-box-shadow: 0px 9px 41px 1px #a5e12d;
-  box-shadow: 0px 9px 41px 1px #a5e12d;
+  color: #a5e12d;
 }
 /* line 83, ../scss/_main-style.scss */
 .quoteCardContainer .carouselNavigation-previous {
@@ -236,7 +221,7 @@ body {
 /* line 149, ../scss/_main-style.scss */
 .quoteCardContainer .quoteContainer .quote .quoteContent {
   margin-bottom: 1.5rem;
-  color: #fff;
+  color: inherit;
   font-family: "Ubuntu", sans-serif;
   font-weight: 700;
   font-size: 26px;

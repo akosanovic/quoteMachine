@@ -60,24 +60,24 @@ body{
 	
 
 	&.blue {
-		background: $blue;
-		@include box-shadow(0px 9px 41px 1px $blue);
+		color: $blue;
+		
 	}
 	&.pink{
-		background: $pink;
-		@include box-shadow(0px 9px 41px 1px $pink);
+		color: $pink;
+		
 	}
 	&.purple{
-		background: $purple;
-		@include box-shadow(0px 9px 41px 1px $purple);
+		color: $purple;
+		
 	}
 	&.orange{
-		background: $orange;
-		@include box-shadow(0px 9px 41px 1px $orange);
+		color: $orange;
+		
 	}
 	&.green{
-		background: $green;
-		@include box-shadow(0px 9px 41px 1px $green);
+		color: $green;
+		
 	}
 
 	.carouselNavigation-previous {
@@ -149,7 +149,7 @@ body{
 			.quoteContent {
 				margin-bottom: $lh;
 
-				color: $white;
+				color: inherit;
 				font-family: $ff-ubuntu;
 				font-weight: 700;
 				font-size: 26px;
