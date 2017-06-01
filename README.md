@@ -1,7 +1,7 @@
 # Quote Machine
 Project in progress.
 
-Creating new quote click next.
+To create new quote click next.
 
 Currently only Programers Quotes API used.
 
