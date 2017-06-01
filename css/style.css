@@ -1,0 +1,254 @@
+@import url("https://fonts.googleapis.com/css?family=Amatic+SC:400,700|Ubuntu:300,400,700");
+/* line 5, C:/Ruby23-x64/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/reset/_utilities.scss */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  font-size: 100%;
+  vertical-align: baseline;
+}
+
+/* line 22, C:/Ruby23-x64/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/reset/_utilities.scss */
+html {
+  line-height: 1;
+}
+
+/* line 24, C:/Ruby23-x64/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/reset/_utilities.scss */
+ol, ul {
+  list-style: none;
+}
+
+/* line 26, C:/Ruby23-x64/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/reset/_utilities.scss */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* line 28, C:/Ruby23-x64/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/reset/_utilities.scss */
+caption, th, td {
+  text-align: left;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+/* line 30, C:/Ruby23-x64/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/reset/_utilities.scss */
+q, blockquote {
+  quotes: none;
+}
+/* line 103, C:/Ruby23-x64/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/reset/_utilities.scss */
+q:before, q:after, blockquote:before, blockquote:after {
+  content: "";
+  content: none;
+}
+
+/* line 32, C:/Ruby23-x64/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/reset/_utilities.scss */
+a img {
+  border: none;
+}
+
+/* line 116, C:/Ruby23-x64/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/reset/_utilities.scss */
+article, aside, details, figcaption, figure, footer, header, hgroup, main, menu, nav, section, summary {
+  display: block;
+}
+
+/* line 3, ../scss/_main-style.scss */
+* {
+  box-sizing: border-box;
+}
+
+/* line 6, ../scss/_main-style.scss */
+html {
+  font-size: 16px;
+}
+
+/* line 10, ../scss/_main-style.scss */
+body {
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+/* line 18, ../scss/_main-style.scss */
+.pageContainer {
+  background: #272822;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+/* line 29, ../scss/_main-style.scss */
+.cardMask {
+  height: 0;
+  opacity: 0;
+  visibility: hidden;
+  -moz-transition: all 1s linear;
+  -o-transition: all 1s linear;
+  -webkit-transition: all 1s linear;
+  transition: all 1s linear;
+}
+/* line 36, ../scss/_main-style.scss */
+.cardMask.openCard {
+  height: 100%;
+  opacity: 1;
+  visibility: visible;
+  -moz-transition: all 1s linear;
+  -o-transition: all 1s linear;
+  -webkit-transition: all 1s linear;
+  transition: all 1s linear;
+}
+
+/* line 45, ../scss/_main-style.scss */
+.quoteCardContainer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -moz-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  max-width: 960px;
+  width: 100%;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+}
+@media screen and (max-width: 1000px) {
+  /* line 45, ../scss/_main-style.scss */
+  .quoteCardContainer {
+    width: 80%;
+  }
+}
+/* line 62, ../scss/_main-style.scss */
+.quoteCardContainer.blue {
+  background: #3da3ef;
+  -moz-box-shadow: 0px 9px 41px 1px #3da3ef;
+  -webkit-box-shadow: 0px 9px 41px 1px #3da3ef;
+  box-shadow: 0px 9px 41px 1px #3da3ef;
+}
+/* line 66, ../scss/_main-style.scss */
+.quoteCardContainer.pink {
+  background: #f92672;
+  -moz-box-shadow: 0px 9px 41px 1px #f92672;
+  -webkit-box-shadow: 0px 9px 41px 1px #f92672;
+  box-shadow: 0px 9px 41px 1px #f92672;
+}
+/* line 70, ../scss/_main-style.scss */
+.quoteCardContainer.purple {
+  background: #ae81ff;
+  -moz-box-shadow: 0px 9px 41px 1px #ae81ff;
+  -webkit-box-shadow: 0px 9px 41px 1px #ae81ff;
+  box-shadow: 0px 9px 41px 1px #ae81ff;
+}
+/* line 74, ../scss/_main-style.scss */
+.quoteCardContainer.orange {
+  background: #fd971f;
+  -moz-box-shadow: 0px 9px 41px 1px #fd971f;
+  -webkit-box-shadow: 0px 9px 41px 1px #fd971f;
+  box-shadow: 0px 9px 41px 1px #fd971f;
+}
+/* line 78, ../scss/_main-style.scss */
+.quoteCardContainer.green {
+  background: #a5e12d;
+  -moz-box-shadow: 0px 9px 41px 1px #a5e12d;
+  -webkit-box-shadow: 0px 9px 41px 1px #a5e12d;
+  box-shadow: 0px 9px 41px 1px #a5e12d;
+}
+/* line 83, ../scss/_main-style.scss */
+.quoteCardContainer .carouselNavigation-previous {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  display: inline-block;
+  width: 20%;
+  height: 100%;
+  cursor: pointer;
+}
+/* line 95, ../scss/_main-style.scss */
+.quoteCardContainer .carouselNavigation-previous:hover .navArrowContainer {
+  opacity: 1;
+}
+/* line 100, ../scss/_main-style.scss */
+.quoteCardContainer .carouselNavigation-previous .navArrowContainer .fa {
+  left: 1.5rem;
+}
+/* line 105, ../scss/_main-style.scss */
+.quoteCardContainer .carouselNavigation-next {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: inline-block;
+  width: 50%;
+  height: 100%;
+  cursor: pointer;
+}
+/* line 117, ../scss/_main-style.scss */
+.quoteCardContainer .carouselNavigation-next:hover .navArrowContainer {
+  opacity: 1;
+}
+/* line 122, ../scss/_main-style.scss */
+.quoteCardContainer .carouselNavigation-next .navArrowContainer .fa {
+  right: 1.5rem;
+}
+/* line 127, ../scss/_main-style.scss */
+.quoteCardContainer .navArrowContainer {
+  color: #fff;
+  opacity: 0.8;
+  height: 100%;
+  font-size: 1.5rem;
+}
+/* line 132, ../scss/_main-style.scss */
+.quoteCardContainer .navArrowContainer .fa {
+  position: absolute;
+  top: 50%;
+  -moz-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+/* line 141, ../scss/_main-style.scss */
+.quoteCardContainer .quoteContainer {
+  width: 80%;
+  margin: 0 auto;
+}
+/* line 145, ../scss/_main-style.scss */
+.quoteCardContainer .quoteContainer .quote {
+  width: 100%;
+  padding: 4.5rem 3rem 3rem;
+}
+/* line 149, ../scss/_main-style.scss */
+.quoteCardContainer .quoteContainer .quote .quoteContent {
+  margin-bottom: 1.5rem;
+  color: #fff;
+  font-family: "Ubuntu", sans-serif;
+  font-weight: 700;
+  font-size: 26px;
+  line-height: 1.5;
+}
+/* line 158, ../scss/_main-style.scss */
+.quoteCardContainer .quoteContainer .quote .quoteAuthor {
+  color: #fff;
+  font-family: "Ubuntu", sans-serif;
+  text-align: right;
+}
+/* line 167, ../scss/_main-style.scss */
+.quoteCardContainer .quote {
+  display: inline-block;
+}
