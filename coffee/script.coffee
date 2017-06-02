@@ -110,17 +110,23 @@ class QuoteMachine
 		@pageContainer = $('.page--container')
 		@cardContainer = @pageContainer.find('.card--container')
 		
+		
 		@displayQuote   = @pageContainer.find('.display--quote')
 
 
 		# helper variables & object holders
 		@counter = 0;
 		@quoteCard = null;
+		@currentHref = @_getHref()
+
+
 		@quoteArray = [];
+		@hrefArray = [];
+
 
 		@programmersQuotesURL = "http://quotes.stormconsultancy.co.uk/quotes.json"
 
-		@currentHash
+
 
 		# event handlers
 		@_loadHandler()
@@ -128,7 +134,6 @@ class QuoteMachine
 		$(document).on('keydown', @_keypressHandler.bind(@))
 		@pageContainer.on('click', @_clickHandler.bind(@))
 
-		
 
 
 
@@ -139,16 +144,12 @@ class QuoteMachine
 		# get programmers quotes
 		$.get(@programmersQuotesURL, @_manageQuoteAPI.bind(@) )
 		
-		
 
-	_hashChangeHandler: () ->
-		href = @_getHash()
-		console.log "HREF is changed, long live newe href", href
+	_hashChangeHandler:() ->
+
+		href = @_getHref()
 		if href
 			@_createNewQuoteCard()
-		else 
-			@_restartCardCarousel()
-
 
 
 	_clickHandler: (e) ->
@@ -159,13 +160,15 @@ class QuoteMachine
 		# clicked on next button - shows next quote
 		element = target.closest(@buttonNext)
 		if element.length > 0
-			@_showNextQuote()
+			@_nextHref()
+			
 		
 		# click on previous button - shows previous quote
 		@buttonPrevious = @pageContainer.find('.prev--button')
 		element = target.closest(@buttonPrevious)
 		if element.length > 0
-			@_showPrevQuote()
+			@_previousHref()
+			
 
 
 
@@ -175,63 +178,114 @@ class QuoteMachine
 		
 		# if right arrow clicked show next quote
 		if keyPressed == 39
-			@_showNextQuote()
-		# 
+			@_nextHref()
+			
+		# if left arrow clicked show prev quote
 		if keyPressed == 37
-			@_showPrevQuote()
+			@_previousHref()
+
 	# Event handling functions :: END
 
-	_restartCardCarousel: () ->
-		newHref = @quoteArray[0]['id']
-		@_setHash( newHref )
+
 
 
 
 
 
 	_getQuoteItem: () ->
-		quoteArrayLength = @quoteArray.length
-		if @counter >= quoteArrayLength
-			@counter = 0
-			@_getQuoteItem()
+
+		hrefCardID = @_getHref()
 		
-		else if quoteArrayLength > @counter
-			number = @counter
-			item = @quoteArray[number]
+		for cardItem in @quoteArray
+			if String(cardItem['id']) == hrefCardID
+				
+				item = cardItem
+				console.log "ITEM, ", item
 			
-			console.log "@counter", @counter
-			console.log "ITEM, ", item
-			
-			return item
+				return item
 		
 		# if end of quote array is reached
 		# if user reverses sliding
 		
 
 
-	_getHash: () -> 
-		hash = window.location.hash
-		console.log "HREF", hash
-
-	_setHash: ( newHash ) ->
-		window.location.hash = "#"+newHash
-
-	_handleHref: () ->
-		href = @_getHash()
-		if !href
-			@_restartCardCarousel()
-		else
-			# manage existing quote
-
-
-
-
 
 	_manageQuoteAPI: (JSONdata) ->
 		for item in JSONdata
+			@hrefArray.push(item['id'])
 			@quoteArray.push(item)
-		@_handleHref()
+		@_restartHref()
 		
+
+
+
+
+
+
+	_getHref: () ->
+		# eg: hash = #post-id=20
+		hash = window.location.hash
+		hashPairs = hash.split('=')
+		hrefID = hashPairs[1]
+
+		return hrefID
+
+
+
+	_setHref: (hash) ->
+		window.location.hash = "#post-id="+hash
+
+
+
+	_restartHref: () ->
+		href = @_getHref()
+		if !href
+			@currentHref = @hrefArray[0]
+			console.log "RESTART HREF", @currentHref
+			@_setHref(@currentHref)
+		else 
+			@_createNewQuoteCard()
+
+
+
+	_nextHref: () ->
+		console.log "NEXT HREF", @currentHref
+		if not @currentHref
+			@_restartHref()
+		else
+			indexOfCurrentHref = @hrefArray.indexOf(@currentHref)
+			
+			# if the max index is not reached
+			if indexOfCurrentHref == @hrefArray.length-1
+				console.log "Max index of href array reached", indexOfCurrentHref
+				indexOfCurrentHref = -1
+			
+			indexOfNextHref = indexOfCurrentHref+=1
+			# change current hreff, set it to next in line
+			@currentHref = @hrefArray[indexOfNextHref]
+			@_setHref(@currentHref)
+		
+
+
+	_previousHref: () ->
+		console.log "PREV HREF"
+		if not @currentHref
+			@_restartHref()
+
+		else 
+			indexOfCurrentHref = @hrefArray.indexOf(@currentHref)
+			# if the start of the href is reached restart it
+			if indexOfCurrentHref == 0
+				indexOfCurrentHref = @hrefArray.length
+
+			indexOfPrevHref = indexOfCurrentHref-=1
+			# change current hreff, set it to next in line
+			@currentHref = @hrefArray[indexOfPrevHref]
+			@_setHref(@currentHref)
+
+
+
+
 
 
 	_createNewQuoteCard: () ->
@@ -239,11 +293,16 @@ class QuoteMachine
 		quoteItem = @_getQuoteItem()
 		console.log "Quote item", quoteItem, "counter ", @counter
 		
-		if quoteItem
+		if @quoteCard
+			@_destroyQuoteCard()
+			@_createNewQuoteCard()
+
+
+		else if quoteItem
 			if quoteObject
 				quoteObject = null
-				@_destroyQuoteCard()
 				@_createNewQuoteCard()
+			
 			else
 				quoteObject = new QuoteCard( quoteItem, @counter )
 				
@@ -261,21 +320,21 @@ class QuoteMachine
 			
 
 
-	_showPrevQuote: () ->
-		console.log "show prev quote"		
-		if @counter >= 2
-			@counter = @counter - 2
-			if @quoteCard
-				@_destroyQuoteCard()
-				@_createNewQuoteCard()
+	# _showPrevQuote: () ->
+	# 	console.log "show prev quote"		
+	# 	if @counter >= 2
+	# 		@counter = @counter - 2
+	# 		if @quoteCard
+	# 			@_destroyQuoteCard()
+	# 			@_createNewQuoteCard()
 
 
 
-	_showNextQuote: () ->
-		console.log "Show next quote"
-		if @quoteCard
-			@_destroyQuoteCard()
-			@_createNewQuoteCard()
+	# _showNextQuote: () ->
+	# 	console.log "Show next quote"
+	# 	if @quoteCard
+	# 		@_destroyQuoteCard()
+	# 		@_createNewQuoteCard()
 
 
 

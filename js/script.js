@@ -52,9 +52,10 @@
       this.displayQuote = this.pageContainer.find('.display--quote');
       this.counter = 0;
       this.quoteCard = null;
+      this.currentHref = this._getHref();
       this.quoteArray = [];
+      this.hrefArray = [];
       this.programmersQuotesURL = "http://quotes.stormconsultancy.co.uk/quotes.json";
-      this.currentHash;
       this._loadHandler();
       $(window).on('hashchange', this._hashChangeHandler.bind(this));
       $(document).on('keydown', this._keypressHandler.bind(this));
@@ -67,12 +68,9 @@
 
     QuoteMachine.prototype._hashChangeHandler = function() {
       var href;
-      href = this._getHash();
-      console.log("HREF is changed, long live newe href", href);
+      href = this._getHref();
       if (href) {
         return this._createNewQuoteCard();
-      } else {
-        return this._restartCardCarousel();
       }
     };
 
@@ -82,12 +80,12 @@
       this.buttonNext = this.pageContainer.find('.next--button');
       element = target.closest(this.buttonNext);
       if (element.length > 0) {
-        this._showNextQuote();
+        this._nextHref();
       }
       this.buttonPrevious = this.pageContainer.find('.prev--button');
       element = target.closest(this.buttonPrevious);
       if (element.length > 0) {
-        return this._showPrevQuote();
+        return this._previousHref();
       }
     };
 
@@ -96,51 +94,24 @@
       keyPressed = e.keyCode;
       console.log("keyPressed ", keyPressed);
       if (keyPressed === 39) {
-        this._showNextQuote();
+        this._nextHref();
       }
       if (keyPressed === 37) {
-        return this._showPrevQuote();
+        return this._previousHref();
       }
-    };
-
-    QuoteMachine.prototype._restartCardCarousel = function() {
-      var newHref;
-      newHref = this.quoteArray[0]['id'];
-      return this._setHash(newHref);
     };
 
     QuoteMachine.prototype._getQuoteItem = function() {
-      var item, number, quoteArrayLength;
-      quoteArrayLength = this.quoteArray.length;
-      if (this.counter >= quoteArrayLength) {
-        this.counter = 0;
-        return this._getQuoteItem();
-      } else if (quoteArrayLength > this.counter) {
-        number = this.counter;
-        item = this.quoteArray[number];
-        console.log("@counter", this.counter);
-        console.log("ITEM, ", item);
-        return item;
-      }
-    };
-
-    QuoteMachine.prototype._getHash = function() {
-      var hash;
-      hash = window.location.hash;
-      return console.log("HREF", hash);
-    };
-
-    QuoteMachine.prototype._setHash = function(newHash) {
-      return window.location.hash = "#" + newHash;
-    };
-
-    QuoteMachine.prototype._handleHref = function() {
-      var href;
-      href = this._getHash();
-      if (!href) {
-        return this._restartCardCarousel();
-      } else {
-
+      var cardItem, hrefCardID, i, item, len, ref;
+      hrefCardID = this._getHref();
+      ref = this.quoteArray;
+      for (i = 0, len = ref.length; i < len; i++) {
+        cardItem = ref[i];
+        if (String(cardItem['id']) === hrefCardID) {
+          item = cardItem;
+          console.log("ITEM, ", item);
+          return item;
+        }
       }
     };
 
@@ -148,9 +119,67 @@
       var i, item, len;
       for (i = 0, len = JSONdata.length; i < len; i++) {
         item = JSONdata[i];
+        this.hrefArray.push(item['id']);
         this.quoteArray.push(item);
       }
-      return this._handleHref();
+      return this._restartHref();
+    };
+
+    QuoteMachine.prototype._getHref = function() {
+      var hash, hashPairs, hrefID;
+      hash = window.location.hash;
+      hashPairs = hash.split('=');
+      hrefID = hashPairs[1];
+      return hrefID;
+    };
+
+    QuoteMachine.prototype._setHref = function(hash) {
+      return window.location.hash = "#post-id=" + hash;
+    };
+
+    QuoteMachine.prototype._restartHref = function() {
+      var href;
+      href = this._getHref();
+      if (!href) {
+        this.currentHref = this.hrefArray[0];
+        console.log("RESTART HREF", this.currentHref);
+        return this._setHref(this.currentHref);
+      } else {
+        return this._createNewQuoteCard();
+      }
+    };
+
+    QuoteMachine.prototype._nextHref = function() {
+      var indexOfCurrentHref, indexOfNextHref;
+      console.log("NEXT HREF", this.currentHref);
+      if (!this.currentHref) {
+        return this._restartHref();
+      } else {
+        indexOfCurrentHref = this.hrefArray.indexOf(this.currentHref);
+        if (indexOfCurrentHref === this.hrefArray.length - 1) {
+          console.log("Max index of href array reached", indexOfCurrentHref);
+          indexOfCurrentHref = -1;
+        }
+        indexOfNextHref = indexOfCurrentHref += 1;
+        this.currentHref = this.hrefArray[indexOfNextHref];
+        return this._setHref(this.currentHref);
+      }
+    };
+
+    QuoteMachine.prototype._previousHref = function() {
+      var indexOfCurrentHref, indexOfPrevHref;
+      console.log("PREV HREF");
+      if (!this.currentHref) {
+        return this._restartHref();
+      } else {
+        indexOfCurrentHref = this.hrefArray.indexOf(this.currentHref);
+        if (indexOfCurrentHref === 0) {
+          indexOfCurrentHref = this.hrefArray.length;
+        }
+        indexOfPrevHref = indexOfCurrentHref -= 1;
+        this.currentHref = this.hrefArray[indexOfPrevHref];
+        return this._setHref(this.currentHref);
+      }
     };
 
     QuoteMachine.prototype._createNewQuoteCard = function() {
@@ -158,10 +187,12 @@
       console.log("ayooo");
       quoteItem = this._getQuoteItem();
       console.log("Quote item", quoteItem, "counter ", this.counter);
-      if (quoteItem) {
+      if (this.quoteCard) {
+        this._destroyQuoteCard();
+        return this._createNewQuoteCard();
+      } else if (quoteItem) {
         if (quoteObject) {
           quoteObject = null;
-          this._destroyQuoteCard();
           return this._createNewQuoteCard();
         } else {
           quoteObject = new QuoteCard(quoteItem, this.counter);
@@ -176,25 +207,6 @@
       if (this.quoteCard) {
         this.quoteCard.remove();
         return this.quoteCard = null;
-      }
-    };
-
-    QuoteMachine.prototype._showPrevQuote = function() {
-      console.log("show prev quote");
-      if (this.counter >= 2) {
-        this.counter = this.counter - 2;
-        if (this.quoteCard) {
-          this._destroyQuoteCard();
-          return this._createNewQuoteCard();
-        }
-      }
-    };
-
-    QuoteMachine.prototype._showNextQuote = function() {
-      console.log("Show next quote");
-      if (this.quoteCard) {
-        this._destroyQuoteCard();
-        return this._createNewQuoteCard();
       }
     };
 
