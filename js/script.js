@@ -33,7 +33,7 @@
 
     QuoteCard.prototype._getHTML = function() {
       var quoteContent;
-      return quoteContent = "<div class='quoteCardContainer " + this.color + "'> <div class='quoteCard'> <div class='carouselNavigation-previous prev--button'> <div class='navArrowContainer'> <i class='fa fa-chevron-left' aria-hidden='true'></i> </div> </div> <div class='quoteContainer'> <div class='quote' data-cardID='" + this.id + "'> <div class='quoteContent display--quote'> " + this.content + " </div> <div class='quoteAuthor'> <span>Author: </span> " + this.author + " </div> </div> </div> <div class='carouselNavigation-next next--button'> <div class='navArrowContainer'> <i class='fa fa-chevron-right' aria-hidden='true'></i> </div> </div> </div> </div>";
+      return quoteContent = "<div class='quoteCardContainer " + this.color + "'> <!-- Facebook share button code --> <div class='fb-share-button' data-href='https://codepen.io/alkos/full/MmNdNa/' data-layout='button' data-size='small' data-mobile-iframe='true'> <a class='fb-xfbml-parse-ignore' target='_blank' href='https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&amp;src=sdkpreparse'> Share </a> </div> <div class='quoteCard'> <div class='carouselNavigation-previous prev--button'> <div class='navArrowContainer'> <i class='fa fa-chevron-left' aria-hidden='true'></i> </div> </div> <div class='quoteContainer'> <div class='quote' data-cardID='" + this.id + "'> <div class='quoteContent display--quote'> " + this.content + " </div> <div class='quoteAuthor'> <span>Author: </span> " + this.author + " </div> </div> </div> <div class='carouselNavigation-next next--button'> <div class='navArrowContainer'> <i class='fa fa-chevron-right' aria-hidden='true'></i> </div> </div> </div> </div>";
     };
 
     QuoteCard.prototype.getQuoteCard = function() {
@@ -52,9 +52,12 @@
       this.displayQuote = this.pageContainer.find('.display--quote');
       this.counter = 0;
       this.quoteCard = null;
+      this.currentHref = this._getHref();
       this.quoteArray = [];
+      this.hrefArray = [];
       this.programmersQuotesURL = "http://quotes.stormconsultancy.co.uk/quotes.json";
       this._loadHandler();
+      $(window).on('hashchange', this._hashChangeHandler.bind(this));
       $(document).on('keydown', this._keypressHandler.bind(this));
       this.pageContainer.on('click', this._clickHandler.bind(this));
     }
@@ -63,18 +66,26 @@
       return $.get(this.programmersQuotesURL, this._manageQuoteAPI.bind(this));
     };
 
+    QuoteMachine.prototype._hashChangeHandler = function() {
+      var href;
+      href = this._getHref();
+      if (href) {
+        return this._createNewQuoteCard();
+      }
+    };
+
     QuoteMachine.prototype._clickHandler = function(e) {
       var element, target;
       target = $(e.target);
       this.buttonNext = this.pageContainer.find('.next--button');
       element = target.closest(this.buttonNext);
       if (element.length > 0) {
-        this._showNextQuote();
+        this._nextHref();
       }
       this.buttonPrevious = this.pageContainer.find('.prev--button');
       element = target.closest(this.buttonPrevious);
       if (element.length > 0) {
-        return this._showPrevQuote();
+        return this._previousHref();
       }
     };
 
@@ -83,25 +94,24 @@
       keyPressed = e.keyCode;
       console.log("keyPressed ", keyPressed);
       if (keyPressed === 39) {
-        this._showNextQuote();
+        this._nextHref();
       }
       if (keyPressed === 37) {
-        return this._showPrevQuote();
+        return this._previousHref();
       }
     };
 
     QuoteMachine.prototype._getQuoteItem = function() {
-      var item, number, quoteArrayLength;
-      quoteArrayLength = this.quoteArray.length;
-      if (this.counter >= quoteArrayLength) {
-        this.counter = 0;
-        return this._getQuoteItem();
-      } else if (quoteArrayLength > this.counter) {
-        number = this.counter;
-        item = this.quoteArray[number];
-        console.log("@counter", this.counter);
-        console.log("ITEM, ", item);
-        return item;
+      var cardItem, hrefCardID, i, item, len, ref;
+      hrefCardID = this._getHref();
+      ref = this.quoteArray;
+      for (i = 0, len = ref.length; i < len; i++) {
+        cardItem = ref[i];
+        if (String(cardItem['id']) === hrefCardID) {
+          item = cardItem;
+          console.log("ITEM, ", item);
+          return item;
+        }
       }
     };
 
@@ -109,9 +119,67 @@
       var i, item, len;
       for (i = 0, len = JSONdata.length; i < len; i++) {
         item = JSONdata[i];
+        this.hrefArray.push(item['id']);
         this.quoteArray.push(item);
       }
-      return this._createNewQuoteCard();
+      return this._restartHref();
+    };
+
+    QuoteMachine.prototype._getHref = function() {
+      var hash, hashPairs, hrefID;
+      hash = window.location.hash;
+      hashPairs = hash.split('=');
+      hrefID = hashPairs[1];
+      return hrefID;
+    };
+
+    QuoteMachine.prototype._setHref = function(hash) {
+      return window.location.hash = "#post-id=" + hash;
+    };
+
+    QuoteMachine.prototype._restartHref = function() {
+      var href;
+      href = this._getHref();
+      if (!href) {
+        this.currentHref = this.hrefArray[0];
+        console.log("RESTART HREF", this.currentHref);
+        return this._setHref(this.currentHref);
+      } else {
+        return this._createNewQuoteCard();
+      }
+    };
+
+    QuoteMachine.prototype._nextHref = function() {
+      var indexOfCurrentHref, indexOfNextHref;
+      console.log("NEXT HREF", this.currentHref);
+      if (!this.currentHref) {
+        return this._restartHref();
+      } else {
+        indexOfCurrentHref = this.hrefArray.indexOf(this.currentHref);
+        if (indexOfCurrentHref === this.hrefArray.length - 1) {
+          console.log("Max index of href array reached", indexOfCurrentHref);
+          indexOfCurrentHref = -1;
+        }
+        indexOfNextHref = indexOfCurrentHref += 1;
+        this.currentHref = this.hrefArray[indexOfNextHref];
+        return this._setHref(this.currentHref);
+      }
+    };
+
+    QuoteMachine.prototype._previousHref = function() {
+      var indexOfCurrentHref, indexOfPrevHref;
+      console.log("PREV HREF");
+      if (!this.currentHref) {
+        return this._restartHref();
+      } else {
+        indexOfCurrentHref = this.hrefArray.indexOf(this.currentHref);
+        if (indexOfCurrentHref === 0) {
+          indexOfCurrentHref = this.hrefArray.length;
+        }
+        indexOfPrevHref = indexOfCurrentHref -= 1;
+        this.currentHref = this.hrefArray[indexOfPrevHref];
+        return this._setHref(this.currentHref);
+      }
     };
 
     QuoteMachine.prototype._createNewQuoteCard = function() {
@@ -119,7 +187,10 @@
       console.log("ayooo");
       quoteItem = this._getQuoteItem();
       console.log("Quote item", quoteItem, "counter ", this.counter);
-      if (quoteItem) {
+      if (this.quoteCard) {
+        this._destroyQuoteCard();
+        return this._createNewQuoteCard();
+      } else if (quoteItem) {
         if (quoteObject) {
           quoteObject = null;
           return this._createNewQuoteCard();
@@ -136,25 +207,6 @@
       if (this.quoteCard) {
         this.quoteCard.remove();
         return this.quoteCard = null;
-      }
-    };
-
-    QuoteMachine.prototype._showPrevQuote = function() {
-      console.log("show prev quote");
-      if (this.counter >= 2) {
-        this.counter = this.counter - 2;
-        if (this.quoteCard) {
-          this._destroyQuoteCard();
-          return this._createNewQuoteCard();
-        }
-      }
-    };
-
-    QuoteMachine.prototype._showNextQuote = function() {
-      console.log("Show next quote");
-      if (this.quoteCard) {
-        this._destroyQuoteCard();
-        return this._createNewQuoteCard();
       }
     };
 
