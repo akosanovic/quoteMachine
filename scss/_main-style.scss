@@ -58,7 +58,6 @@ body{
 	}
 
 	
-
 	&.blue {
 		color: $blue;
 		
@@ -79,6 +78,17 @@ body{
 		color: $green;
 		
 	}
+	&:hover { 
+		.socialMediaShareButtonsContainer {
+			top: -$lh;
+			z-index: 10;
+			visibility: visible;
+			opacity: 1;
+			@include transition(all 1s ease-in-out);
+		}
+	}
+
+
 
 	.carouselNavigation-previous {
 		position: absolute;
@@ -170,3 +180,14 @@ body{
 	}
 }
 
+.socialMediaShareButtonsContainer {
+	position: absolute;
+	top: $lh;
+	right: 0;
+
+	z-index: -1;
+	visibility: hidden;
+	opacity: 0;
+	@include transition(all 1s ease-in-out);
+
+}
