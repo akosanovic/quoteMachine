@@ -35,7 +35,19 @@ class @QuoteCard
 
 	_getHTML: () ->
 		quoteContent = 
-			"<div class='quoteCardContainer #{@color}'>
+			"<div class='quoteCardContainer quote--card--container #{@color}'>
+
+				<div class='socialMediaShareButtonsContainer'>
+					<!-- Facebook share button code -->
+					<div class='fb-share-button ' data-href='https://codepen.io/alkos/pen/MmNdNa?editors=1010' data-layout='button' data-size='small' data-mobile-iframe='true'>
+						<a class='fb-xfbml-parse-ignore' target='_blank' href='https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&amp;src=sdkpreparse'>
+							Share
+						</a>
+					</div>
+
+				</div>
+
+
 				<div class='quoteCard'>
 
 					<div class='carouselNavigation-previous prev--button'>
@@ -98,7 +110,6 @@ class QuoteMachine
 		@pageContainer = $('.page--container')
 		@cardContainer = @pageContainer.find('.card--container')
 		
-		
 		@displayQuote   = @pageContainer.find('.display--quote')
 
 
@@ -109,10 +120,11 @@ class QuoteMachine
 
 		@programmersQuotesURL = "http://quotes.stormconsultancy.co.uk/quotes.json"
 
-
+		@currentHash
 
 		# event handlers
 		@_loadHandler()
+		$(window).on('hashchange', @_hashChangeHandler.bind(@))
 		$(document).on('keydown', @_keypressHandler.bind(@))
 		@pageContainer.on('click', @_clickHandler.bind(@))
 
@@ -128,6 +140,16 @@ class QuoteMachine
 		$.get(@programmersQuotesURL, @_manageQuoteAPI.bind(@) )
 		
 		
+
+	_hashChangeHandler: () ->
+		href = @_getHash()
+		console.log "HREF is changed, long live newe href", href
+		if href
+			@_createNewQuoteCard()
+		else 
+			@_restartCardCarousel()
+
+
 
 	_clickHandler: (e) ->
 		target = $(e.target)
@@ -159,7 +181,9 @@ class QuoteMachine
 			@_showPrevQuote()
 	# Event handling functions :: END
 
-
+	_restartCardCarousel: () ->
+		newHref = @quoteArray[0]['id']
+		@_setHash( newHref )
 
 
 
@@ -185,11 +209,29 @@ class QuoteMachine
 		
 
 
+	_getHash: () -> 
+		hash = window.location.hash
+		console.log "HREF", hash
+
+	_setHash: ( newHash ) ->
+		window.location.hash = "#"+newHash
+
+	_handleHref: () ->
+		href = @_getHash()
+		if !href
+			@_restartCardCarousel()
+		else
+			# manage existing quote
+
+
+
+
 
 	_manageQuoteAPI: (JSONdata) ->
 		for item in JSONdata
 			@quoteArray.push(item)
-		@_createNewQuoteCard()
+		@_handleHref()
+		
 
 
 	_createNewQuoteCard: () ->
@@ -200,6 +242,7 @@ class QuoteMachine
 		if quoteItem
 			if quoteObject
 				quoteObject = null
+				@_destroyQuoteCard()
 				@_createNewQuoteCard()
 			else
 				quoteObject = new QuoteCard( quoteItem, @counter )
